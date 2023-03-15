@@ -1,6 +1,7 @@
 const fs = require("fs");
 const csv = require("csvtojson");
-const { Transform } = require("stream");
+const { Transform} = require("stream");
+const {pipeline}=require("stream/promises")
 
 const main = async () => {
   const readStream = fs.createReadStream("./data/import.csv", {
@@ -30,30 +31,20 @@ const main = async () => {
         callback(null);
         return
       }
-      callback(null,user)
+
+      console.log(user)
+      callback(null)
     },
   });
   
-  readStream
-    .pipe(
-      csv(
-        {
-          delimiter: ";",
-        },
-        { objectMode: true } // it will transform the readed stream into objects
-      )
-    )
-    .pipe(myTransform)
-    .pipe(myFilter)
-    .on("data", (buffer) => {
-        console.log("DATA++++++++++++++++:");
-        console.log(buffer);
-    })
-    .on("error", (error) => {
-      console.log("STREAM ERROR:", error);
-    })
-    .on("end", () => {
-      console.log("Stream Ended!");
-    });
+ // Pipeline always expects the last transform to perform writeStream
+   await pipeline(
+    readStream,
+    csv({delimiter:';'},{objectMode:true}),
+    myTransform,
+    myFilter
+   )
+
+   console.log("STream Ended!!!")
 };
 main();
