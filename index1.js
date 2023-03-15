@@ -9,6 +9,31 @@ const main = async () => {
 
   const writeStream = fs.createWriteStream("./data/export.csv");
 
+  const myTransform = new Transform({
+    objectMode: true,
+    transform(chunk, enc, callback) {
+      const user = {
+        name: chunk.name,
+        email: chunk.email.toLowerCase(),
+        age: Number(chunk.age),
+        salary: Number(chunk.salary),
+        isActive: chunk.isActive == "true",
+      };
+      callback(null, user);
+    },
+  });
+
+  const myFilter = new Transform({
+    objectMode: true,
+    transform(user, enc, callback) {
+      if(!user.isActive || user.salary<1000){
+        callback(null);
+        return
+      }
+      callback(null,user)
+    },
+  });
+  
   readStream
     .pipe(
       csv(
@@ -18,24 +43,17 @@ const main = async () => {
         { objectMode: true } // it will transform the readed stream into objects
       )
     )
-    .pipe(
-        new Transform({
-            objectMode:true,
-            transform(chunk,enc,callback){
-                console.log("chunk",chunk)
-                callback(null,chunk)
-            }
-        })
-    )
+    .pipe(myTransform)
+    .pipe(myFilter)
     .on("data", (buffer) => {
-    //   console.log("DATA++++++++++++++++:");
-    //   console.log(buffer);
+        console.log("DATA++++++++++++++++:");
+        console.log(buffer);
     })
-    .on("error",(error)=>{
-        console.log("STREAM ERROR:",error)
+    .on("error", (error) => {
+      console.log("STREAM ERROR:", error);
     })
-    .on('end',()=>{
-        console.log("Stream Ended!")
-    })
+    .on("end", () => {
+      console.log("Stream Ended!");
+    });
 };
 main();
