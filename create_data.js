@@ -1,7 +1,7 @@
 const fs = require("fs");
 const { faker } = require("@faker-js/faker");
 
-const writeStream = fs.createWriteStream("./import.csv");
+const writeStream = fs.createWriteStream("./data/import.csv");
 
 writeStream.write("name;email;age;salary;isActive\n");
 
