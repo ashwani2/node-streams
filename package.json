@@ -10,6 +10,7 @@
   "author": "Ashwani",
   "license": "ISC",
   "dependencies": {
-    "@faker-js/faker": "^7.6.0"
+    "@faker-js/faker": "^7.6.0",
+    "csvtojson": "^2.0.10"
   }
 }
