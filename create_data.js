@@ -38,7 +38,7 @@ writeStream.write("name;email;age;salary;isActive\n");
 let i=0
 function writeMany(){
 
-  while (i < 1000000) {
+  while (i < 10000) {
     const firstName = faker.name.firstName();
     const email = faker.internet.email(firstName);
     const age = faker.datatype.number({ min: 10, max: 100 });
@@ -49,7 +49,7 @@ function writeMany(){
     // console.log(writeStream.writableLength)
 
     // this is our last write
-    if (i === 1000000 - 1) {
+    if (i === 10000 - 1) {
       return writeStream.end(arr.join(';')+'\n');
     }
 
