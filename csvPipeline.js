@@ -43,7 +43,7 @@ const main = async () => {
     objectMode: true,
     transform(user, enc, callback) {
       const element = Object.values(user).join(",") + "\n";
-      console.log(element);
+      // console.log(element);
       callback(null, element);
     },
   });
